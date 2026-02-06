@@ -2,6 +2,8 @@
 
 An independent, non-partisan single-page web app that visualizes the three ballot propositions for Riverview School District No. 407's February 10, 2026 special election.
 
+Published on GitHub Pages: https://fitzgeraldsteele.github.io/riverview-funding-2026/
+
 ## Propositions Covered
 
 | Proposition | Type | Amount | Threshold |
