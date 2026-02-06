@@ -631,6 +631,10 @@ a:hover {
   background: var(--color-bg-alt);
 }
 
+.calc-result-card.excluded {
+  opacity: 0.55;
+}
+
 .calc-result-card .result-label {
   font-size: var(--text-sm);
   font-weight: 600;

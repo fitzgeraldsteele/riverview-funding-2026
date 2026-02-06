@@ -93,8 +93,34 @@ const App = (() => {
   }
 
   // ─── Tax Impact Calculator ────────────────────────────────────
-  let showDifference = false;
-  let currentHomeValue = APP_DATA.taxImpact.medianHomeValue;
+  const taxState = {
+    showDifference: false,
+    homeValue: APP_DATA.taxImpact.medianHomeValue,
+    included: { prop1: true, prop2: true, prop3: true },
+  };
+
+  function clampHomeValue(value) {
+    return Math.max(200000, Math.min(2000000, parseInt(value) || APP_DATA.taxImpact.medianHomeValue));
+  }
+
+  function formatRate(rate) {
+    const abs = Math.abs(rate);
+    const base = '$' + abs.toFixed(2) + '/$1K';
+    if (rate === 0) return '$0.00/$1K';
+    return rate > 0 ? '+' + base : '-' + base;
+  }
+
+  function getEffectiveRates() {
+    const rates = APP_DATA.taxImpact.ratesUsed;
+    if (!taxState.showDifference) return { ...rates };
+
+    const current2025 = APP_DATA.taxImpact.current2025Rates;
+    return {
+      prop1: rates.prop1 - current2025.epo,
+      prop2: rates.prop2 - current2025.techCap,
+      prop3: rates.prop3 - current2025.bond,
+    };
+  }
 
   function initTaxCalculator() {
     const slider = document.getElementById('tax-slider');
@@ -103,56 +129,112 @@ const App = (() => {
     const resetBtn = document.getElementById('reset-median');
     const diffCheckbox = document.getElementById('show-difference');
     const compNote = document.getElementById('comparison-note');
+    const include1 = document.getElementById('include-prop1');
+    const include2 = document.getElementById('include-prop2');
+    const include3 = document.getElementById('include-prop3');
+    const chartTitle = document.getElementById('tax-impact-title');
 
     if (!slider || !input) return;
 
-    const rates = APP_DATA.taxImpact.ratesUsed;
-    const current2025 = APP_DATA.taxImpact.current2025Rates;
-
-    function updateCalc(value) {
-      value = Math.max(200000, Math.min(2000000, parseInt(value) || 886000));
-      currentHomeValue = value;
-      slider.value = value;
-      input.value = value;
-      if (display) display.textContent = '$' + parseInt(value).toLocaleString();
-
-      let prop1 = (value / 1000) * rates.prop1;
-      let prop2 = (value / 1000) * rates.prop2;
-      let prop3 = (value / 1000) * rates.prop3;
-
-      if (showDifference) {
-        // Show the DIFFERENCE from current 2025 taxes
-        const current1 = (value / 1000) * current2025.epo;
-        const current2 = (value / 1000) * current2025.techCap;
-        const current3 = (value / 1000) * current2025.bond;
-        prop1 = prop1 - current1;
-        prop2 = prop2 - current2;
-        prop3 = prop3 - current3;
-      }
-
-      const total = prop1 + prop2 + prop3;
-
-      setResult('prop1', prop1);
-      setResult('prop2', prop2);
-      setResult('prop3', prop3);
-      setResult('total', total);
+    function setCardExcluded(prop, isIncluded) {
+      const card = document.querySelector(`.calc-result-card[data-prop="${prop}"]`);
+      if (!card) return;
+      card.classList.toggle('excluded', !isIncluded);
     }
 
-    function setResult(prop, annual) {
+    function setResult(prop, annual, isIncluded) {
       const card = document.querySelector(`.calc-result-card[data-prop="${prop}"]`);
       if (!card) return;
       const annualEl = card.querySelector('.result-annual');
       const monthlyEl = card.querySelector('.result-monthly');
-      const prefix = showDifference && annual >= 0 ? '+' : '';
-      const sign = showDifference && annual < 0 ? '-' : '';
-      const absAnnual = Math.abs(Math.round(annual));
-      const absMonthly = Math.abs(Math.round(annual / 12));
+
+      const effectiveAnnual = isIncluded ? annual : 0;
+      const prefix = taxState.showDifference && effectiveAnnual >= 0 ? '+' : '';
+      const sign = taxState.showDifference && effectiveAnnual < 0 ? '-' : '';
+      const absAnnual = Math.abs(Math.round(effectiveAnnual));
+      const absMonthly = Math.abs(Math.round(effectiveAnnual / 12));
       if (annualEl) annualEl.textContent = sign + prefix + '$' + absAnnual.toLocaleString() + '/yr';
       if (monthlyEl) monthlyEl.textContent = sign + prefix + '$' + absMonthly.toLocaleString() + '/mo';
     }
 
-    slider.addEventListener('input', (e) => updateCalc(e.target.value));
-    input.addEventListener('change', (e) => updateCalc(e.target.value));
+    function updateLabels() {
+      const rates = APP_DATA.taxImpact.ratesUsed;
+      const current2025 = APP_DATA.taxImpact.current2025Rates;
+      const delta = {
+        prop1: rates.prop1 - current2025.epo,
+        prop2: rates.prop2 - current2025.techCap,
+        prop3: rates.prop3 - current2025.bond,
+      };
+
+      document.querySelectorAll('.calc-result-card').forEach((card) => {
+        const label = card.querySelector('.result-label');
+        if (!label) return;
+        const prop = card.dataset.prop;
+
+        if (taxState.showDifference) {
+          if (prop === 'prop1') label.textContent = `Prop 1 — EP&O (change: ${formatRate(delta.prop1)})`;
+          else if (prop === 'prop2') label.textContent = `Prop 2 — Tech (change: ${formatRate(delta.prop2)})`;
+          else if (prop === 'prop3') label.textContent = `Prop 3 — Bond (new: ${formatRate(delta.prop3)})`;
+          else if (prop === 'total') label.textContent = 'Net Change from 2025 (selected props)';
+        } else {
+          if (prop === 'prop1') label.innerHTML = `Prop 1 — EP&amp;O ($${rates.prop1.toFixed(2)}/$1K)`;
+          else if (prop === 'prop2') label.textContent = `Prop 2 — Tech ($${rates.prop2.toFixed(2)}/$1K)`;
+          else if (prop === 'prop3') label.textContent = `Prop 3 — Bond ($${rates.prop3.toFixed(2)}/$1K)`;
+          else if (prop === 'total') label.textContent = 'Combined Total (selected props)';
+        }
+      });
+
+      if (chartTitle) {
+        chartTitle.textContent = taxState.showDifference
+          ? 'Annual Tax Impact by Home Value (Net Change vs 2025, Selected Propositions)'
+          : 'Annual Tax Impact by Home Value (Selected Propositions, Stacked)';
+      }
+    }
+
+    function syncAll() {
+      const value = clampHomeValue(taxState.homeValue);
+      taxState.homeValue = value;
+      slider.value = value;
+      input.value = value;
+      if (display) display.textContent = '$' + parseInt(value).toLocaleString();
+
+      const rates = getEffectiveRates();
+      const prop1 = (value / 1000) * rates.prop1;
+      const prop2 = (value / 1000) * rates.prop2;
+      const prop3 = (value / 1000) * rates.prop3;
+
+      const total =
+        (taxState.included.prop1 ? prop1 : 0) +
+        (taxState.included.prop2 ? prop2 : 0) +
+        (taxState.included.prop3 ? prop3 : 0);
+
+      setCardExcluded('prop1', taxState.included.prop1);
+      setCardExcluded('prop2', taxState.included.prop2);
+      setCardExcluded('prop3', taxState.included.prop3);
+
+      setResult('prop1', prop1, taxState.included.prop1);
+      setResult('prop2', prop2, taxState.included.prop2);
+      setResult('prop3', prop3, taxState.included.prop3);
+      setResult('total', total, true);
+
+      updateLabels();
+
+      if (typeof Charts.setTaxImpactState === 'function') {
+        Charts.setTaxImpactState({
+          showDifference: taxState.showDifference,
+          included: { ...taxState.included },
+          selectedHomeValue: taxState.homeValue,
+        });
+      }
+    }
+
+    function updateFromValue(value) {
+      taxState.homeValue = value;
+      syncAll();
+    }
+
+    slider.addEventListener('input', (e) => updateFromValue(e.target.value));
+    input.addEventListener('change', (e) => updateFromValue(e.target.value));
     input.addEventListener('input', (e) => {
       if (display) {
         const v = parseInt(e.target.value);
@@ -163,38 +245,38 @@ const App = (() => {
     // Reset to median button
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
-        updateCalc(APP_DATA.taxImpact.medianHomeValue);
+        updateFromValue(APP_DATA.taxImpact.medianHomeValue);
       });
     }
 
     // Difference toggle
     if (diffCheckbox) {
       diffCheckbox.addEventListener('change', (e) => {
-        showDifference = e.target.checked;
-        if (compNote) compNote.style.display = showDifference ? 'block' : 'none';
-        // Update labels
-        document.querySelectorAll('.calc-result-card').forEach((card) => {
-          const label = card.querySelector('.result-label');
-          if (!label) return;
-          const prop = card.dataset.prop;
-          if (showDifference) {
-            if (prop === 'prop1') label.textContent = 'Prop 1 — EP&O (change: $0.00/$1K)';
-            else if (prop === 'prop2') label.textContent = 'Prop 2 — Tech (change: +$0.06/$1K)';
-            else if (prop === 'prop3') label.textContent = 'Prop 3 — Bond (new: +$1.00/$1K)';
-            else if (prop === 'total') label.textContent = 'Net Change from 2025';
-          } else {
-            if (prop === 'prop1') label.innerHTML = 'Prop 1 — EP&amp;O ($1.50/$1K)';
-            else if (prop === 'prop2') label.textContent = 'Prop 2 — Tech ($0.56/$1K)';
-            else if (prop === 'prop3') label.textContent = 'Prop 3 — Bond ($1.00/$1K)';
-            else if (prop === 'total') label.textContent = 'Combined Total (all 3)';
-          }
-        });
-        updateCalc(currentHomeValue);
+        taxState.showDifference = e.target.checked;
+        if (compNote) compNote.style.display = taxState.showDifference ? 'block' : 'none';
+        syncAll();
       });
     }
 
+    // Include toggles
+    function wireInclude(checkbox, key) {
+      if (!checkbox) return;
+      checkbox.addEventListener('change', (e) => {
+        taxState.included[key] = !!e.target.checked;
+        syncAll();
+      });
+    }
+
+    wireInclude(include1, 'prop1');
+    wireInclude(include2, 'prop2');
+    wireInclude(include3, 'prop3');
+
     // Initialize with median home value
-    updateCalc(APP_DATA.taxImpact.medianHomeValue);
+    if (diffCheckbox) diffCheckbox.checked = taxState.showDifference;
+    if (include1) include1.checked = taxState.included.prop1;
+    if (include2) include2.checked = taxState.included.prop2;
+    if (include3) include3.checked = taxState.included.prop3;
+    syncAll();
   }
 
   // ─── Bond Chart Type Toggle ───────────────────────────────────

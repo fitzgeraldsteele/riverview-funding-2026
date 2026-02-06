@@ -290,6 +290,21 @@
               <input type="checkbox" id="show-difference" style="accent-color: var(--color-accent);" />
               Show change from current 2025 taxes
             </label>
+
+            <span style="color: var(--color-text-light);">·</span>
+            <span style="color: var(--color-text-muted);">Include:</span>
+            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
+              <input type="checkbox" id="include-prop1" checked style="accent-color: var(--color-prop1);" />
+              Prop 1
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
+              <input type="checkbox" id="include-prop2" checked style="accent-color: var(--color-prop2);" />
+              Prop 2
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
+              <input type="checkbox" id="include-prop3" checked style="accent-color: var(--color-prop3);" />
+              Prop 3
+            </label>
           </div>
 
           <div id="comparison-note" style="display: none; background: var(--color-accent-light); border: 1px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); font-size: var(--text-xs); color: var(--color-accent);">
@@ -330,7 +345,7 @@
 
         <div class="tax-chart-area">
           <div class="chart-container">
-            <h4>Annual Tax Impact by Home Value (All Three Propositions, Stacked)</h4>
+            <h4 id="tax-impact-title">Annual Tax Impact by Home Value (Selected Propositions, Stacked)</h4>
             <div class="chart-wrapper" style="min-height: 300px;">
               <canvas id="chart-tax-impact" aria-label="Stacked bar chart showing annual tax impact by home assessed value for all three propositions"></canvas>
             </div>

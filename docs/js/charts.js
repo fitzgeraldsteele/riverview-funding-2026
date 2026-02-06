@@ -7,6 +7,12 @@ const Charts = (() => {
   const instances = {};
   const C = APP_DATA.colors;
 
+  let taxImpactState = {
+    showDifference: false,
+    included: { prop1: true, prop2: true, prop3: true },
+    selectedHomeValue: APP_DATA.taxImpact.medianHomeValue,
+  };
+
   // ─── Helpers ──────────────────────────────────────────────────
   const fmt = (n) =>
     n >= 1e6
@@ -236,6 +242,87 @@ const Charts = (() => {
   }
 
   // ─── Tax Impact Stacked Bar ───────────────────────────────────
+  function getNearestTierIndex(values, selected) {
+    if (!values.length) return -1;
+    let bestIdx = 0;
+    let bestDist = Math.abs(values[0] - selected);
+    for (let i = 1; i < values.length; i++) {
+      const d = Math.abs(values[i] - selected);
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = i;
+      }
+    }
+    return bestIdx;
+  }
+
+  function buildTaxImpactDatasets() {
+    const tiers = APP_DATA.taxImpact.tiers;
+    const values = tiers.map((t) => t.value);
+    const highlightIndex = getNearestTierIndex(values, taxImpactState.selectedHomeValue);
+
+    const rates = APP_DATA.taxImpact.ratesUsed;
+    const current2025 = APP_DATA.taxImpact.current2025Rates;
+    const effectiveRates = taxImpactState.showDifference
+      ? {
+          prop1: rates.prop1 - current2025.epo,
+          prop2: rates.prop2 - current2025.techCap,
+          prop3: rates.prop3 - current2025.bond,
+        }
+      : { ...rates };
+
+    const props = [
+      { key: 'prop1', label: 'Prop 1 (EP&O)', color: C.prop1 },
+      { key: 'prop2', label: 'Prop 2 (Tech)', color: C.prop2 },
+      { key: 'prop3', label: 'Prop 3 (Bond)', color: C.prop3 },
+    ];
+
+    return props.map((p) => {
+      const included = !!taxImpactState.included[p.key];
+      const data = values.map((v) => (v / 1000) * effectiveRates[p.key]);
+
+      const bg = values.map((_, i) => p.color + (i === highlightIndex ? 'ff' : 'cc'));
+      const bw = values.map((_, i) => (i === highlightIndex ? 2 : 1));
+
+      return {
+        label: p.label,
+        data,
+        backgroundColor: bg,
+        borderColor: p.color,
+        borderWidth: bw,
+        hidden: !included,
+      };
+    });
+  }
+
+  function getTaxImpactYScaleOptions(datasets) {
+    const allValues = datasets
+      .filter((d) => !d.hidden)
+      .flatMap((d) => d.data);
+
+    const min = allValues.length ? Math.min(...allValues) : 0;
+    const max = allValues.length ? Math.max(...allValues) : 0;
+
+    const beginAtZero = min >= 0;
+
+    const scale = {
+      stacked: true,
+      grid: { color: getGridColor() },
+      ticks: { callback: (v) => fmtFull(v) },
+    };
+
+    if (beginAtZero) {
+      scale.beginAtZero = true;
+    } else {
+      // Provide a little padding so negative/positive bars aren’t flush to the edge
+      const pad = Math.max(50, Math.round((max - min) * 0.06));
+      scale.min = min - pad;
+      scale.max = max + pad;
+    }
+
+    return scale;
+  }
+
   function createTaxImpactChart(canvasId) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
@@ -243,36 +330,13 @@ const Charts = (() => {
     if (instances[canvasId]) instances[canvasId].destroy();
 
     const tiers = APP_DATA.taxImpact.tiers;
+    const datasets = buildTaxImpactDatasets();
 
     instances[canvasId] = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: tiers.map(
-          (t) => '$' + (t.value / 1000).toFixed(0) + 'K'
-        ),
-        datasets: [
-          {
-            label: 'Prop 1 (EP&O)',
-            data: tiers.map((t) => t.prop1Annual),
-            backgroundColor: C.prop1 + 'cc',
-            borderColor: C.prop1,
-            borderWidth: 1,
-          },
-          {
-            label: 'Prop 2 (Tech)',
-            data: tiers.map((t) => t.prop2Annual),
-            backgroundColor: C.prop2 + 'cc',
-            borderColor: C.prop2,
-            borderWidth: 1,
-          },
-          {
-            label: 'Prop 3 (Bond)',
-            data: tiers.map((t) => t.prop3Annual),
-            backgroundColor: C.prop3 + 'cc',
-            borderColor: C.prop3,
-            borderWidth: 1,
-          },
-        ],
+        labels: tiers.map((t) => '$' + (t.value / 1000).toFixed(0) + 'K'),
+        datasets,
       },
       options: {
         plugins: {
@@ -290,15 +354,31 @@ const Charts = (() => {
         },
         scales: {
           x: { stacked: true, grid: { display: false } },
-          y: {
-            stacked: true,
-            beginAtZero: true,
-            grid: { color: getGridColor() },
-            ticks: { callback: (v) => fmtFull(v) },
-          },
+          y: getTaxImpactYScaleOptions(datasets),
         },
       },
     });
+  }
+
+  function updateTaxImpactChart() {
+    const chart = instances['chart-tax-impact'];
+    if (!chart) return;
+
+    const datasets = buildTaxImpactDatasets();
+    chart.data.datasets = datasets;
+    chart.options.scales.y = getTaxImpactYScaleOptions(datasets);
+    chart.update();
+  }
+
+  function setTaxImpactState(next) {
+    taxImpactState = {
+      ...taxImpactState,
+      ...next,
+      included: { ...taxImpactState.included, ...(next.included || {}) },
+    };
+
+    // If charts aren't initialized yet, we just store state
+    if (instances['chart-tax-impact']) updateTaxImpactChart();
   }
 
   // ─── District Levy Rate Comparison ────────────────────────────
@@ -756,5 +836,6 @@ const Charts = (() => {
     sortDistricts,
     instances,
     createTaxImpactChart,
+    setTaxImpactState,
   };
 })();
