@@ -191,7 +191,19 @@ const App = (() => {
       }
     }
 
-    function syncAll() {
+    let chartDebounceTimer = null;
+
+    function pushToChart() {
+      if (typeof Charts.setTaxImpactState === 'function') {
+        Charts.setTaxImpactState({
+          showDifference: taxState.showDifference,
+          included: { ...taxState.included },
+          selectedHomeValue: taxState.homeValue,
+        });
+      }
+    }
+
+    function syncAll(immediate) {
       const value = clampHomeValue(taxState.homeValue);
       taxState.homeValue = value;
       slider.value = value;
@@ -219,22 +231,24 @@ const App = (() => {
 
       updateLabels();
 
-      if (typeof Charts.setTaxImpactState === 'function') {
-        Charts.setTaxImpactState({
-          showDifference: taxState.showDifference,
-          included: { ...taxState.included },
-          selectedHomeValue: taxState.homeValue,
-        });
+      // Chart update: immediate for toggles/checkboxes, debounced for slider drag
+      if (immediate) {
+        clearTimeout(chartDebounceTimer);
+        pushToChart();
+      } else {
+        clearTimeout(chartDebounceTimer);
+        chartDebounceTimer = setTimeout(pushToChart, 250);
       }
     }
 
-    function updateFromValue(value) {
+    function updateFromValue(value, immediate) {
       taxState.homeValue = value;
-      syncAll();
+      syncAll(!!immediate);
     }
 
-    slider.addEventListener('input', (e) => updateFromValue(e.target.value));
-    input.addEventListener('change', (e) => updateFromValue(e.target.value));
+    slider.addEventListener('input', (e) => updateFromValue(e.target.value, false));
+    slider.addEventListener('change', (e) => updateFromValue(e.target.value, true));
+    input.addEventListener('change', (e) => updateFromValue(e.target.value, true));
     input.addEventListener('input', (e) => {
       if (display) {
         const v = parseInt(e.target.value);
@@ -254,7 +268,7 @@ const App = (() => {
       diffCheckbox.addEventListener('change', (e) => {
         taxState.showDifference = e.target.checked;
         if (compNote) compNote.style.display = taxState.showDifference ? 'block' : 'none';
-        syncAll();
+        syncAll(true);
       });
     }
 
@@ -263,7 +277,7 @@ const App = (() => {
       if (!checkbox) return;
       checkbox.addEventListener('change', (e) => {
         taxState.included[key] = !!e.target.checked;
-        syncAll();
+        syncAll(true);
       });
     }
 
@@ -276,7 +290,7 @@ const App = (() => {
     if (include1) include1.checked = taxState.included.prop1;
     if (include2) include2.checked = taxState.included.prop2;
     if (include3) include3.checked = taxState.included.prop3;
-    syncAll();
+    syncAll(true);
   }
 
   // ─── Bond Chart Type Toggle ───────────────────────────────────

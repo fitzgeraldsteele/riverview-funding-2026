@@ -263,91 +263,121 @@
       <div class="container">
         <div class="section-header">
           <h2>Tax Impact Calculator</h2>
-          <p>Enter your home's assessed value to see the estimated annual and monthly cost for each proposition. Rates shown are per $1,000 of assessed value.</p>
+          <p>Enter your home's assessed value and select which propositions to include. Results update automatically.</p>
         </div>
 
-        <div class="calculator">
-          <label for="tax-slider">Home Assessed Value</label>
-          <div class="calculator-input-group">
-            <input type="range" id="tax-slider" min="200000" max="2000000" step="10000" value="886000" aria-label="Home assessed value slider" />
-            <span class="value-display" id="tax-value-display">$886,000</span>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md);">
-            <label for="tax-input" style="font-size: var(--text-sm); margin: 0; white-space: nowrap;">Or enter exact value: $</label>
-            <input type="number" id="tax-input" value="886000" min="200000" max="2000000" step="10000"
-              style="width: 140px; padding: var(--space-sm); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-family: var(--font-mono); font-size: var(--text-sm); background: var(--color-bg); color: var(--color-text);" />
-            <button id="reset-median" class="calc-action-btn" title="Reset to area median assessed value ($886,000)">
-              ↺ Reset to Median ($886K)
-            </button>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); font-size: var(--text-sm);">
-            <a href="https://blue.kingcounty.com/Assessor/eRealProperty/default.aspx" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px;">
-              🔍 Look up your home's assessed value
-              <span style="font-size: 0.7em; vertical-align: super;">↗</span>
-            </a>
-            <span style="color: var(--color-text-light);">·</span>
-            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
-              <input type="checkbox" id="show-difference" style="accent-color: var(--color-accent);" />
-              Show change from current 2025 taxes
-            </label>
-
-            <span style="color: var(--color-text-light);">·</span>
-            <span style="color: var(--color-text-muted);">Include:</span>
-            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
-              <input type="checkbox" id="include-prop1" checked style="accent-color: var(--color-prop1);" />
-              Prop 1
-            </label>
-            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
-              <input type="checkbox" id="include-prop2" checked style="accent-color: var(--color-prop2);" />
-              Prop 2
-            </label>
-            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
-              <input type="checkbox" id="include-prop3" checked style="accent-color: var(--color-prop3);" />
-              Prop 3
-            </label>
-          </div>
-
-          <div id="comparison-note" style="display: none; background: var(--color-accent-light); border: 1px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); font-size: var(--text-xs); color: var(--color-accent);">
-            Showing the <strong>difference</strong> from your current 2025 school levy taxes. Props 1 &amp; 2 are renewals (small change). Prop 3 is a new bond (net increase).
-          </div>
-
-          <div class="calc-results">
-            <div class="calc-result-card" data-prop="prop1">
-              <div class="result-label">Prop 1 — EP&amp;O ($1.50/$1K)</div>
-              <div class="result-amounts">
-                <div class="result-annual">—</div>
-                <div class="result-monthly">—</div>
+        <div class="tax-layout">
+          <!-- ── Controls Panel (left on desktop, top on mobile) ── -->
+          <div class="tax-controls-panel">
+            <div class="tax-controls-section">
+              <label for="tax-slider" class="tax-controls-heading">Home Assessed Value</label>
+              <div class="calculator-input-group">
+                <input type="range" id="tax-slider" min="200000" max="2000000" step="10000" value="886000" aria-label="Home assessed value slider" />
               </div>
-            </div>
-            <div class="calc-result-card" data-prop="prop2">
-              <div class="result-label">Prop 2 — Tech ($0.56/$1K)</div>
-              <div class="result-amounts">
-                <div class="result-annual">—</div>
-                <div class="result-monthly">—</div>
+              <div class="tax-value-row">
+                <span class="value-display" id="tax-value-display">$886,000</span>
+                <div class="tax-value-actions">
+                  <label for="tax-input" class="sr-only">Exact value</label>
+                  <span class="tax-input-prefix">$</span>
+                  <input type="number" id="tax-input" value="886000" min="200000" max="2000000" step="10000" class="tax-exact-input" />
+                  <button id="reset-median" class="calc-action-btn" title="Reset to area median assessed value ($886,000)">↺ Median</button>
+                </div>
               </div>
+              <a href="https://blue.kingcounty.com/Assessor/eRealProperty/default.aspx" target="_blank" rel="noopener noreferrer" class="tax-lookup-link">
+                🔍 Look up your assessed value <span aria-hidden="true">↗</span>
+              </a>
             </div>
-            <div class="calc-result-card" data-prop="prop3">
-              <div class="result-label">Prop 3 — Bond ($1.00/$1K)</div>
-              <div class="result-amounts">
-                <div class="result-annual">—</div>
-                <div class="result-monthly">—</div>
+
+            <div class="tax-controls-section">
+              <span class="tax-controls-heading">Include Propositions</span>
+              <div class="tax-prop-toggles">
+                <label class="tax-toggle" data-color="prop1">
+                  <input type="checkbox" id="include-prop1" checked />
+                  <span class="tax-toggle-indicator" style="background: var(--color-prop1);"></span>
+                  Prop 1 — EP&amp;O
+                </label>
+                <label class="tax-toggle" data-color="prop2">
+                  <input type="checkbox" id="include-prop2" checked />
+                  <span class="tax-toggle-indicator" style="background: var(--color-prop2);"></span>
+                  Prop 2 — Tech
+                </label>
+                <label class="tax-toggle" data-color="prop3">
+                  <input type="checkbox" id="include-prop3" checked />
+                  <span class="tax-toggle-indicator" style="background: var(--color-prop3);"></span>
+                  Prop 3 — Bond
+                </label>
               </div>
+              <p class="tax-controls-hint">Select propositions to include in your tax estimate.</p>
             </div>
+
+            <div class="tax-controls-section">
+              <label class="tax-toggle tax-toggle--diff">
+                <input type="checkbox" id="show-difference" />
+                Show change from current 2025 taxes
+              </label>
+            </div>
+
+            <div id="comparison-note" class="tax-comparison-note" style="display: none;">
+              Showing the <strong>difference</strong> from your current 2025 school levy taxes. Props 1 &amp; 2 are renewals (small change). Prop 3 is a new bond (net increase).
+            </div>
+          </div>
+
+          <!-- ── Results Panel — Unified Block ── -->
+          <div class="tax-results-block">
+            <!-- Total — Hero Row (top) -->
             <div class="calc-result-card total" data-prop="total">
-              <div class="result-label">Combined Total (all 3)</div>
+              <div class="result-label">Combined Total (selected props)</div>
               <div class="result-amounts">
                 <div class="result-annual">—</div>
                 <div class="result-monthly">—</div>
               </div>
             </div>
+
+            <!-- Sum divider -->
+            <div class="calc-sum-divider" aria-hidden="true"><span>Breakdown</span></div>
+
+            <!-- Breakdown rows -->
+            <div class="calc-results">
+              <div class="calc-result-card" data-prop="prop1">
+                <div class="result-color-stripe" style="background: var(--color-prop1);"></div>
+                <div class="result-body">
+                  <div class="result-label">Prop 1 — EP&amp;O ($1.50/$1K)</div>
+                  <div class="result-amounts">
+                    <div class="result-annual">—</div>
+                    <div class="result-monthly">—</div>
+                  </div>
+                </div>
+              </div>
+              <div class="calc-result-card" data-prop="prop2">
+                <div class="result-color-stripe" style="background: var(--color-prop2);"></div>
+                <div class="result-body">
+                  <div class="result-label">Prop 2 — Tech ($0.56/$1K)</div>
+                  <div class="result-amounts">
+                    <div class="result-annual">—</div>
+                    <div class="result-monthly">—</div>
+                  </div>
+                </div>
+              </div>
+              <div class="calc-result-card" data-prop="prop3">
+                <div class="result-color-stripe" style="background: var(--color-prop3);"></div>
+                <div class="result-body">
+                  <div class="result-label">Prop 3 — Bond ($1.00/$1K)</div>
+                  <div class="result-amounts">
+                    <div class="result-annual">—</div>
+                    <div class="result-monthly">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- ── Chart (always below, full width) ── -->
         <div class="tax-chart-area">
           <div class="chart-container">
             <h4 id="tax-impact-title">Annual Tax Impact by Home Value (Selected Propositions, Stacked)</h4>
             <div class="chart-wrapper" style="min-height: 300px;">
-              <canvas id="chart-tax-impact" aria-label="Stacked bar chart showing annual tax impact by home assessed value for all three propositions"></canvas>
+              <canvas id="chart-tax-impact" aria-label="Stacked bar chart showing annual tax impact by home assessed value for selected propositions"></canvas>
             </div>
           </div>
         </div>
