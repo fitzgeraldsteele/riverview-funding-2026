@@ -1,0 +1,11 @@
+# Research files — not part of the deployed site
+research/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riverview School District 2026 Bonds and Levies Review</title>
+  <meta name="description" content="Independent, non-partisan voter guide for Riverview School District 407 February 2026 ballot propositions — EP&amp;O Levy, Technology Levy, and Capital Bond." />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Navigation
+       ═══════════════════════════════════════════════════════════════ -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <span class="nav-brand">RSD 2026 Review</span>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#prop1-detail">Prop 1</a>
+        <a href="#prop2-detail">Prop 2</a>
+        <a href="#prop3-detail">Prop 3</a>
+        <a href="#tax-impact">Tax Impact</a>
+        <a href="#comparisons">Compare</a>
+        <a href="#history">History</a>
+        <a href="#enrollment">Enrollment</a>
+        <a href="#sources">Sources</a>
+      </div>
+      <div class="nav-controls">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Hero
+       ═══════════════════════════════════════════════════════════════ -->
+  <header class="hero">
+    <div class="container">
+      <h1>Riverview School District<br />2026 Bonds and Levies Review</h1>
+      <span class="election-date">Election Day: February 10, 2026</span>
+      <p class="hero-summary">
+        Three measures are on the ballot for Riverview School District No. 407 voters in King County, Washington.
+        Two are renewal levies that fund ongoing operations and technology. One is a new capital bond to replace
+        Tolt Middle School and improve all district facilities. This guide presents the facts, data, and context
+        so you can make an informed decision.
+      </p>
+    </div>
+  </header>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer" role="note">
+    This is an independent informational resource. It is not affiliated with Riverview School District, any campaign,
+    or any political organization. Data sourced from public records and news reporting.
+    <a href="#sources">See all sources</a>.
+  </div>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         At a Glance
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="overview">
+      <div class="container">
+        <div class="section-header">
+          <h2>At a Glance</h2>
+          <p>Three propositions, each voted on independently. Propositions 1 &amp; 2 need a simple majority. Proposition 3 requires 60% approval.</p>
+        </div>
+        <div class="prop-cards" id="prop-cards">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Proposition 1 Deep Dive
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section deep-dive" id="prop1-detail" data-lazy-chart>
+      <div class="container">
+        <div class="section-header">
+          <h2 style="color: var(--color-prop1);">Proposition 1: EP&amp;O Levy</h2>
+          <p>Educational Programs &amp; Operations replacement levy — $53.9 million over 4 years at $1.50 per $1,000 assessed value.</p>
+        </div>
+
+        <div class="deep-dive-grid">
+          <div class="chart-container">
+            <h4>Annual Levy Collections (2027–2030)</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-prop1-annual" aria-label="Bar chart showing Proposition 1 annual levy collections from 2027 to 2030"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h4>How EP&amp;O Funds Are Used</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-prop1-funding" aria-label="Doughnut chart showing how EP&O levy funds are allocated"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✓ Arguments For</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="pros-prop1"></ul>
+          </div>
+          <div class="cons-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✗ Arguments Against</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="cons-prop1"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Proposition 2 Deep Dive
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section deep-dive" id="prop2-detail">
+      <div class="container">
+        <div class="section-header">
+          <h2 style="color: var(--color-prop2);">Proposition 2: Technology &amp; Capital Levy</h2>
+          <p>Technology and capital projects replacement levy — $19.2 million over 4 years at a declining rate ($0.56 → $0.51 per $1,000 AV).</p>
+        </div>
+
+        <div class="deep-dive-grid">
+          <div class="chart-container">
+            <h4>Annual Levy Collections (2027–2030)</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-prop2-annual" aria-label="Bar chart showing Proposition 2 annual levy collections from 2027 to 2030"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h4>How Technology Funds Are Used</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-prop2-funding" aria-label="Doughnut chart showing how technology levy funds are allocated"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✓ Arguments For</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="pros-prop2"></ul>
+          </div>
+          <div class="cons-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✗ Arguments Against</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="cons-prop2"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Proposition 3 Deep Dive
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section deep-dive" id="prop3-detail">
+      <div class="container">
+        <div class="section-header">
+          <h2 style="color: var(--color-prop3);">Proposition 3: Capital Bond ($185.5M)</h2>
+          <p>New general obligation bond for facility construction and improvement — primarily replacing the 116-year-old Tolt Middle School. Requires 60% supermajority to pass.</p>
+        </div>
+
+        <div class="chart-container">
+          <h4>Where the $185.5M Goes — Project Breakdown</h4>
+          <div class="chart-toggle-group">
+            <button class="chart-toggle active" data-chart-toggle="bar">Bar Chart</button>
+            <button class="chart-toggle" data-chart-toggle="doughnut">Doughnut</button>
+          </div>
+          <div class="chart-wrapper" style="min-height: 400px;">
+            <canvas id="chart-bond-breakdown" aria-label="Chart showing how the $185.5 million bond will be spent across 12 projects"></canvas>
+          </div>
+        </div>
+
+        <div class="deep-dive-grid" style="margin-top: var(--space-xl);">
+          <div class="chart-container">
+            <h4>Estimated Annual Bond Payments</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-prop3-annual" aria-label="Bar chart showing estimated annual bond payments"></canvas>
+            </div>
+          </div>
+          <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: var(--space-lg);">
+            <h4 style="margin-bottom: var(--space-md); font-weight: 600;">Key Bond Facts</h4>
+            <ul style="list-style: none; font-size: var(--text-sm); color: var(--color-text-muted); line-height: 2;">
+              <li>🏫 Tolt Middle School was built in <strong>1910</strong> (116 years old)</li>
+              <li>📊 71.4% of the bond ($132.5M) is for Tolt replacement</li>
+              <li>🔒 Bond resolution legally constrains funds to listed projects</li>
+              <li>🗳️ Requires <strong>60% supermajority</strong> approval</li>
+              <li>📈 2020 bond was $125M — failed at 53.21% (needed 60%)</li>
+              <li>🏗️ Construction costs have risen ~6.6%/year (Mortenson Index)</li>
+              <li>🏠 38 portable classrooms currently in use across district</li>
+              <li>👥 Middle school enrollment projected to grow 21% by 2028</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✓ Arguments For</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="pros-prop3"></ul>
+          </div>
+          <div class="cons-list">
+            <div class="pros-cons-header" role="button" tabindex="0" aria-expanded="true">
+              <span>✗ Arguments Against</span>
+              <span class="toggle-icon" aria-hidden="true">▼</span>
+            </div>
+            <ul class="pros-cons-items" id="cons-prop3"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Tax Impact Calculator
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="tax-impact">
+      <div class="container">
+        <div class="section-header">
+          <h2>Tax Impact Calculator</h2>
+          <p>Enter your home's assessed value to see the estimated annual and monthly cost for each proposition. Rates shown are per $1,000 of assessed value.</p>
+        </div>
+
+        <div class="calculator">
+          <label for="tax-slider">Home Assessed Value</label>
+          <div class="calculator-input-group">
+            <input type="range" id="tax-slider" min="200000" max="2000000" step="10000" value="886000" aria-label="Home assessed value slider" />
+            <span class="value-display" id="tax-value-display">$886,000</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md);">
+            <label for="tax-input" style="font-size: var(--text-sm); margin: 0; white-space: nowrap;">Or enter exact value: $</label>
+            <input type="number" id="tax-input" value="886000" min="200000" max="2000000" step="10000"
+              style="width: 140px; padding: var(--space-sm); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-family: var(--font-mono); font-size: var(--text-sm); background: var(--color-bg); color: var(--color-text);" />
+            <button id="reset-median" class="calc-action-btn" title="Reset to area median assessed value ($886,000)">
+              ↺ Reset to Median ($886K)
+            </button>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); font-size: var(--text-sm);">
+            <a href="https://blue.kingcounty.com/Assessor/eRealProperty/default.aspx" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px;">
+              🔍 Look up your home's assessed value
+              <span style="font-size: 0.7em; vertical-align: super;">↗</span>
+            </a>
+            <span style="color: var(--color-text-light);">·</span>
+            <label style="display: inline-flex; align-items: center; gap: var(--space-sm); cursor: pointer; margin: 0; user-select: none;">
+              <input type="checkbox" id="show-difference" style="accent-color: var(--color-accent);" />
+              Show change from current 2025 taxes
+            </label>
+          </div>
+
+          <div id="comparison-note" style="display: none; background: var(--color-accent-light); border: 1px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); font-size: var(--text-xs); color: var(--color-accent);">
+            Showing the <strong>difference</strong> from your current 2025 school levy taxes. Props 1 &amp; 2 are renewals (small change). Prop 3 is a new bond (net increase).
+          </div>
+
+          <div class="calc-results">
+            <div class="calc-result-card" data-prop="prop1">
+              <div class="result-label">Prop 1 — EP&amp;O ($1.50/$1K)</div>
+              <div class="result-amounts">
+                <div class="result-annual">—</div>
+                <div class="result-monthly">—</div>
+              </div>
+            </div>
+            <div class="calc-result-card" data-prop="prop2">
+              <div class="result-label">Prop 2 — Tech ($0.56/$1K)</div>
+              <div class="result-amounts">
+                <div class="result-annual">—</div>
+                <div class="result-monthly">—</div>
+              </div>
+            </div>
+            <div class="calc-result-card" data-prop="prop3">
+              <div class="result-label">Prop 3 — Bond ($1.00/$1K)</div>
+              <div class="result-amounts">
+                <div class="result-annual">—</div>
+                <div class="result-monthly">—</div>
+              </div>
+            </div>
+            <div class="calc-result-card total" data-prop="total">
+              <div class="result-label">Combined Total (all 3)</div>
+              <div class="result-amounts">
+                <div class="result-annual">—</div>
+                <div class="result-monthly">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tax-chart-area">
+          <div class="chart-container">
+            <h4>Annual Tax Impact by Home Value (All Three Propositions, Stacked)</h4>
+            <div class="chart-wrapper" style="min-height: 300px;">
+              <canvas id="chart-tax-impact" aria-label="Stacked bar chart showing annual tax impact by home assessed value for all three propositions"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         District Comparisons
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="comparisons">
+      <div class="container">
+        <div class="section-header">
+          <h2>How Does Riverview Compare?</h2>
+          <p>Levy rates, per-student funding, and bond costs compared across neighboring districts in King and Snohomish Counties.</p>
+        </div>
+
+        <div class="comparison-grid">
+          <div class="chart-container">
+            <h4>Levy Rates by District (per $1,000 Assessed Value)</h4>
+            <div class="sort-controls">
+              <button class="sort-btn active" data-sort="combined">Sort by Combined Rate</button>
+              <button class="sort-btn" data-sort="alpha">Sort Alphabetically</button>
+            </div>
+            <div class="chart-wrapper" style="min-height: 400px;">
+              <canvas id="chart-district-comparison" aria-label="Horizontal stacked bar chart comparing levy rates across 12 school districts"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h4>Levy Funding per Student (2027 Estimates)</h4>
+            <div class="chart-wrapper" style="min-height: 250px;">
+              <canvas id="chart-per-student" aria-label="Horizontal bar chart comparing per-student levy funding across 6 districts"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-container" style="grid-column: 1 / -1;">
+            <h4>Bond Cost per Student — Recent WA School Bonds</h4>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">
+              Green = passed, Red = failed, Amber = pending (Feb 2026). Higher cost-per-student bonds have historically been harder to pass.
+            </p>
+            <div class="chart-wrapper" style="min-height: 300px;">
+              <canvas id="chart-bond-per-student" aria-label="Horizontal bar chart comparing bond cost per student across 6 districts, color-coded by election outcome"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Historical Context
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="history">
+      <div class="container">
+        <div class="section-header">
+          <h2>Historical Voting Record</h2>
+          <p>Riverview's track record on school funding measures since 1990. EP&amp;O levies have passed continuously since 1992 — but bonds have a much rockier history.</p>
+        </div>
+
+        <div class="deep-dive-grid">
+          <div>
+            <div class="timeline" id="history-timeline">
+              <!-- Populated by app.js -->
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h4>Construction Cost Escalation (Seattle Metro)</h4>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">
+              Based on Mortenson Cost Index (~6.6%/year). The 2020 failed bond was $125M; the 2026 bond is $185.5M — reflecting 6 years of construction inflation.
+            </p>
+            <div class="chart-wrapper" style="min-height: 280px;">
+              <canvas id="chart-cost-escalation" aria-label="Line chart showing construction cost escalation from 2017 to 2026"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Enrollment & Growth
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="enrollment">
+      <div class="container">
+        <div class="section-header">
+          <h2>Enrollment &amp; Growth</h2>
+          <p>District enrollment has declined ~9% from peak, but middle school enrollment is projected to grow 21% by 2028 due to new housing development in Duvall and Carnation.</p>
+        </div>
+
+        <div class="deep-dive-grid">
+          <div class="chart-container">
+            <h4>District-Wide Enrollment Trend</h4>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">Total district enrollment has declined ~9% since the 2018-19 peak. Kindergarten enrollment (180 actual vs. 208 budgeted in 2024-25) suggests the trend may continue short-term.</p>
+            <div class="chart-wrapper" style="min-height: 280px;">
+              <canvas id="chart-enrollment-district" aria-label="Line chart showing district-wide enrollment decline from 2018 to 2025"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h4>Middle School Enrollment — Current &amp; Projected</h4>
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">Despite district-wide declines, middle school enrollment is projected to grow 21% by 2028-29, driven by 380 new housing starts in Duvall and 200+ in Carnation.</p>
+            <div class="chart-wrapper" style="min-height: 280px;">
+              <canvas id="chart-enrollment-ms" aria-label="Bar chart showing middle school enrollment actuals and projections through 2028-29"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: var(--space-lg); margin-top: var(--space-xl);">
+          <h4 style="margin-bottom: var(--space-md); font-weight: 600;">Additional Context</h4>
+          <ul style="list-style: none; font-size: var(--text-sm); color: var(--color-text-muted); line-height: 2.2;">
+            <li>👶 <strong>Kindergarten (2024-25):</strong> 180 actual vs. 208 budgeted — below projections</li>
+            <li>🏠 <strong>New housing:</strong> 380 starts planned in Duvall, 200+ in Carnation</li>
+            <li>📦 <strong>Portable classrooms:</strong> 38 across district (capacity for 351 students)</li>
+            <li>💰 <strong>Portable cost:</strong> ~$500K each (38 × $500K = $19M invested in temporary capacity)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Sources
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="sources">
+      <div class="container">
+        <div class="section-header">
+          <h2>Sources &amp; Citations</h2>
+          <p>All data in this guide is sourced from public records, district publications, news reporting, and government election materials. Links open in a new tab.</p>
+        </div>
+        <div class="sources-grid" id="sources-list">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Footer
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <strong>Riverview School District 2026 Bonds and Levies Review</strong><br />
+        An independent, non-partisan voter information resource.
+      </p>
+      <p>
+        Created by <strong>Jerry Steele</strong> — 9-year Duvall resident.<br />
+        Questions or feedback? <a href="https://twitter.com/fjsteele" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-light); text-decoration: underline;">@fjsteele on X/Twitter</a>
+      </p>
+      <p style="font-size: var(--text-sm); color: var(--color-text-light); line-height: 1.8;">
+        Research compiled using Deep Research from
+        <a href="https://gemini.google.com/share/8555c7efdd3c" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-light); text-decoration: underline;">Gemini</a>,
+        <a href="https://claude.ai/public/artifacts/bb7e92a8-b987-40ed-bbfa-75da090f35a8" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-light); text-decoration: underline;">Claude</a>, and
+        <a href="https://chatgpt.com/share/69857023-7658-8000-8080-0403afa2ef24" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-light); text-decoration: underline;">ChatGPT</a>.
+      </p>
+      <p>
+        This site is not affiliated with Riverview School District No. 407, any campaign committee, or any political organization.
+        Data compiled from public records, district publications, and news reporting.
+      </p>
+      <p style="color: var(--color-text-light); font-size: 0.75rem;">
+        Last updated: February 2026 · <a href="#sources" style="color: var(--color-text-light);">View all sources</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
